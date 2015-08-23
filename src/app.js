@@ -8,6 +8,16 @@
     return eid();
   }
 
+  var mock = {
+  	cars: function(numberOfMockCars) {
+  		var cars = [];
+  		for (var i = 0; i < numberOfMockCars; i++) {
+  			cars.push({name: '', location: '', power: Math.random(), notes: ''});
+  		}
+  		return cars;
+  	}
+  }
+
 var app = {locations:[], selectedLocationID:null, map:null};
 
 app.displayLocationsList = function(locations){
@@ -25,7 +35,7 @@ app.displayLocationsList = function(locations){
 };
 
 app.displayMap = function(){
-  var map = L.map('map').setView([37.755817, -122.389932], 11);
+  var map = L.map('map').setView([33.47541, -81.96899], 11);
 
   L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
       attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>',
@@ -60,6 +70,12 @@ app.displayMap = function(){
   app.map = map;
 
 };
+
+	app.displayDatatable = function(target){
+		var target = target || "#datatable";
+
+		var cars = utils.mock.car(50);
+	};
 
   app.init = function(){
     app.displayMap();
