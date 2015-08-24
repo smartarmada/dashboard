@@ -12,6 +12,7 @@
 <script type="text/javascript" src='./lib/jquery.dataTables.js'></script>
 <script src="http://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.3/leaflet.js"></script>
 <script type='text/javascript' src='./lib/bootstrap/js/bootstrap.min.js'></script>
+<script type='text/javascript' src='./lib/chance.js'></script>
 <script type='text/javascript' src='./src/app.js'></script>
 
 <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.3/leaflet.css" />
@@ -27,14 +28,14 @@
 
 <div class='container'>
 <div class='page-header'>
-  <h1>Smart Armada</h1>
+  <h1>Smart Armada Dashboard</h1>
 </div>
 
 <div id='map'></div>
   <div class='row'>
-    <div id='locations-list'  class='col-xs-12 col-md-6'></div>
-    <div class='col-xs-12 col-md-6'>
-      <table id='datatable'></table>
+    <div id='locations-list'  class='col-xs-12 col-md-3'></div>
+    <div class='col-xs-12 col-md-9'>
+      <table id='datatable' class='table'></table>
   </div>
   </div>
 </div>

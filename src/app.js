@@ -6,17 +6,68 @@
       return "_"+(count++);
     }
     return eid();
-  }
+  };
 
   var mock = {
-  	cars: function(numberOfMockCars) {
+  	car: function(numberOfMockCars) {
+  		var carNames = [
+  			'Reasonable Excuse',
+  			'Plausible Explaination',
+  			'Enviable Logic',
+  			'Just Passing Through',
+  			'Feigned Innocence',
+  			'Impermanent Fixture',
+  			'Who Me?',
+  			'Participant Observer',
+  			'Witting Accomplice',
+  			'Implaccable',
+  			'Crossing Guard',
+  			'Pain of Death',
+  			'Unreliable Witness',
+  			'Impersonal Demeanor',
+  			'Inpromptu',
+  			'Flat Affect',
+  			'Unfit Survivor',
+  			'Fate Calling',
+  			'Balderdash',
+  			'Impossible Getaway',
+  			'Implausible Escape',
+  			'Fight or Flight',
+  			'Impact Uncertain',
+  			'No Right to Be Here',
+  			'Naked Agression',
+  			'Causeway',
+  			'Van Possessed, A',
+  			'Lead Foot',
+  			'Bulletproof',
+  			'Alabai',
+  			'Poor Impulse Control',
+  			'Unexpected',
+  			'Unpredictable',
+  			'Discontinued',
+  			'Recalled Model',
+  			'Poor Role Model',
+  			'Bad Uncle Jackson',
+  			'I Should Have Been a Dentist',
+  			'Born Liar',
+  			'Suspicious',
+  			'Curious Disposition'
+  		];
   		var cars = [];
-  		for (var i = 0; i < numberOfMockCars; i++) {
-  			cars.push({name: '', location: '', power: Math.random(), notes: ''});
+  		for (var i = 0; i < carNames.length; i++) {
+  			cars.push({
+  				name: carNames[i],
+  				location: chance.address(),
+  				battery: Math.floor( Math.random() * 100 ),
+  				driver: chance.name(),
+  				notes: chance.sentence(),
+  				latitude: 33.42 + (0.1*Math.random()),
+  				longitude: -82.03 + (0.1*Math.random())
+  			});
   		}
   		return cars;
   	}
-  }
+  };
 
 var app = {locations:[], selectedLocationID:null, map:null};
 
@@ -35,7 +86,22 @@ app.displayLocationsList = function(locations){
 };
 
 app.displayMap = function(){
-  var map = L.map('map').setView([33.47541, -81.96899], 11);
+  var map = L.map('map').setView([33.47541, -81.96899], 13);
+
+  for (var i = 0; i < app.cars.length; i++) {
+  	var latlng = L.latLng(app.cars[i].latitude, app.cars[i].longitude);
+  	var popupString = '<h4>'+app.cars[i].name+'</h4>';
+  	popupString += '<table class="table"><tr><td>Battery</td><td>'+app.cars[i].battery+'%</td></tr>';
+  	popupString += '<tr><td>Driver</td><td>'+app.cars[i].driver+'</td></tr>';
+  	popupString += '</table>';
+  	L.circle(latlng, 70, {
+      weight:4,
+      color: 'hsl('+(0+app.cars[i].battery)+', 100%, 50%)',
+      fillOpacity: 0.5
+    })
+    .bindPopup(popupString)
+    .addTo(map);
+  }
 
   L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
       attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>',
@@ -43,7 +109,7 @@ app.displayMap = function(){
       id: 'lukedavis.3457dfcb',
       accessToken: 'pk.eyJ1IjoibHVrZWRhdmlzIiwiYSI6IjcwMDBkNWEyNmZlYzU0YTI0YTYxMGYyMmNkZjBhNjRmIn0.kd__Iir1FCZkgkrp8r-byQ'
   }).addTo(map);
-
+  /*
   map.on("click",function(e){
     var id = eid();
     var circle = L.circle(e.latlng, 100, {
@@ -63,9 +129,11 @@ app.displayMap = function(){
       app.displayLocationsList(app.locations);
     });
 
-    app.locations.push({id:id, latlng:e.latlng, radius: 100, mapObject: circle, title:"Title", notes:"notes"});
+    //app.locations.push({id:id, latlng:e.latlng, radius: 100, mapObject: circle, title:"Title", notes:"notes"});
+
     app.displayLocationsList(app.locations);
   });
+    */
 
   app.map = map;
 
@@ -74,10 +142,26 @@ app.displayMap = function(){
 	app.displayDatatable = function(target){
 		var target = target || "#datatable";
 
-		var cars = utils.mock.car(50);
+		var cars = app.cars;
+		var columns = [
+			{data: 'name', title: 'Name'},
+			{data: 'battery', title: 'Battery(%)'},
+			{data: 'driver', title: 'Driver'},
+			{data: 'location', title: 'Location'},
+			{data: 'notes', title: 'Notes'}
+		];
+
+		$('#datatable').DataTable({
+				data: cars,
+				columns: columns,
+				paging: false,
+				searching: false
+			});
 	};
 
   app.init = function(){
+  	app.cars = mock.car(50);
+  	app.displayDatatable('#datatable');
     app.displayMap();
 
     $('#exampleModal').on('show.bs.modal', function (event) {
