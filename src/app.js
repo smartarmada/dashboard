@@ -62,7 +62,7 @@
   				driver: chance.name(),
   				notes: chance.sentence(),
   				latitude: 33.42 + (0.1*Math.random()),
-  				longitude: -82.03 + (0.1*Math.random())
+  				longitude: -82.14 + (0.2*Math.random())
   			});
   		}
   		return cars;
@@ -86,7 +86,7 @@ app.displayLocationsList = function(locations){
 };
 
 app.displayMap = function(){
-  var map = L.map('map').setView([33.47541, -81.96899], 13);
+  var map = L.map('map').setView([33.47541, -82], 12);
 
   for (var i = 0; i < app.cars.length; i++) {
   	var latlng = L.latLng(app.cars[i].latitude, app.cars[i].longitude);
@@ -159,9 +159,69 @@ app.displayMap = function(){
 			});
 	};
 
+	app.displayDonutChart = function(target, data) {
+
+		var columns = [];
+		for (var i = 0; i < 25; i++) {
+			columns.push([chance.address(), Math.floor(Math.random()*30000)])
+		}
+
+		columns.sort(function(a,b){
+			return b[1]-a[1];
+		});
+
+		var colors = {};
+		for (var i=0;i<25;i++){
+			colors[columns[i][0]]='hsl('+(150-(i*(150/25)))+', 100%, 50%)';
+		}
+
+		var chart = c3.generate({
+			bindto: target,
+	    data: {
+	        columns: columns,
+	    		colors: colors,
+	        type : 'donut',
+	        onclick: function (d, i) { console.log("onclick", d, i); },
+	        onmouseover: function (d, i) { console.log("onmouseover", d, i); },
+	        onmouseout: function (d, i) { console.log("onmouseout", d, i); }
+	    },
+	    donut: {
+	        title: "Profit Per Location"
+	    },
+		    legend: {
+		    	show: false
+		    }
+		});
+	};
+
+	app.displayTimeseriesChart = function(target, data) {
+		var chart = c3.generate({
+				bindto: '#timeseries',
+		    data: {
+		        x: 'x',
+		//        xFormat: '%Y%m%d', // 'xFormat' can be used as custom format of 'x'
+		        columns: [
+		            ['x', '2013-01-01', '2013-01-02', '2013-01-03', '2013-01-04', '2013-01-05', '2013-01-06'],
+		            ['Atlanta', 30, 200, 100, 400, 150, 250],
+		            ['Augusta', 130, 340, 200, 500, 250, 350]
+		        ]
+		    },
+		    axis: {
+		        x: {
+		            type: 'timeseries',
+		            tick: {
+		                format: '%Y-%m-%d'
+		            }
+		        }
+		    }
+		});
+	};
+
   app.init = function(){
   	app.cars = mock.car(50);
+  	app.displayDonutChart("#donut");
   	app.displayDatatable('#datatable');
+  	//app.displayTimeseriesChart("#timeseries");
     app.displayMap();
 
     $('#exampleModal').on('show.bs.modal', function (event) {
