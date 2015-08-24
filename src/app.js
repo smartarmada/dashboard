@@ -86,7 +86,7 @@ app.displayLocationsList = function(locations){
 };
 
 app.displayMap = function(){
-  var map = L.map('map').setView([33.47541, -82], 12);
+  var map = L.map('map').setView([33.47541, -82], 13);
 
   for (var i = 0; i < app.cars.length; i++) {
   	var latlng = L.latLng(app.cars[i].latitude, app.cars[i].longitude);
